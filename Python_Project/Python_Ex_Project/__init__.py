@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
 import pymysql
 
-conn = pymysql.connect(host='localhost', user='kimjiha', password='9509', db='kimjihadb', charset='utf8') 
+conn = pymysql.connect(host='localhost', user='User_name', password='User_password', db='User_DB', charset='utf8') 
 # mysql에 연결
 
 def insert_SQL():
@@ -58,19 +58,26 @@ def insert_SQL():
 
 def select_SQL():
     curs = conn.cursor()
-    # 값을 
+    # 값을 호출하기 위한 select문을 전송해 줄 커서 생성
+    # cursor의 ( )안에 pymysql.cursors.DictCursor을 입력하면
+    # 값을 딕셔너리의 형태로 출력해 옴
+    
     sql = 'select * from TEST2'
     curs.execute(sql)
     row = curs.fetchall()
+    # select해온 결과 값을 row에 tuple의 형태로 각 값을 저장
+    
     print("-번호-\t-이름-")
     for i in range(len(row)):
         print(' %d\t %s'%(row[i][0],row[i][1]))
+        # 입력된 값 출력 문
     conn.close()
+    # 연결 종료
 
 def main_sql():
     print(" <<<< 연동 테스트 >>>>")
     print("어떤 작업을 하시겠습니까?\n1.데이터 입력\n2.데이터 출력")
-    user = input(">>>")
+    user = input(">>> ")
     if user == '1':
         insert_SQL()
     elif user =='2':
