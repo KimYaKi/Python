@@ -1,15 +1,19 @@
-# -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\Users\rlawl\Desktop\제조사정보.ui'
-#
-# Created by: PyQt5 UI code generator 5.9
-#
-# WARNING! All changes made in this file will be lost!
-
+import pymysql
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+# MySQL Connection 연결
+conn = pymysql.connect(host = 'localhost', user = 'kimjiha', password = '9509', db = 'kimjihadb', charset='utf8')
+
+# Connection 으로부터 Dictoionary Cursor 생성
+# 테이블에 저장된 값을 딕셔너리 형태로 생성해서 저장시킨다.
+curs = conn.cursor()
+
 class Ui_Frame(object):
-    def setupUi(self, Frame):
+    
+    data = ["--제조사 정보--"]
+    
+    def setupUi(self, Frame): 
         Frame.setObjectName("Frame")
         Frame.resize(860, 191)
         Frame.setInputMethodHints(QtCore.Qt.ImhHiddenText)
@@ -71,10 +75,13 @@ class Ui_Frame(object):
         self.combo.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(Frame)
 
-    def retranslateUi(self, Frame):
+    def retranslateUi(self, Frame, data):
         _translate = QtCore.QCoreApplication.translate
         Frame.setWindowTitle(_translate("Frame", "Frame"))
-        self.combo.setItemText(0, _translate("Frame", "--제조사 코드--"))
+        
+        for num in range(len(data)):
+            self.combo.setItemText(num, _translate("Frame", "%s")%data)
+            
         self.manu_name.setText(_translate("Frame", "제조사 이름"))
         self.manu_addr.setText(_translate("Frame", "제조사 주소"))
         self.manu_hp.setText(_translate("Frame", "제조사 번호"))

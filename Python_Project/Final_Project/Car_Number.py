@@ -3,7 +3,7 @@ import pymysql
 import random
 
 # MySQL Connection 연결
-conn = pymysql.connect(host = 'localhost', user = 'user_name', password = 'user_password', db = 'DB_name', charset='utf8')
+conn = pymysql.connect(host = 'localhost', user = 'u', password = '', db = '', charset='utf8')
 
 # Connection 으로부터 Dictoionary Cursor 생성
 # 테이블에 저장된 값을 딕셔너리 형태로 생성해서 저장시킨다.
