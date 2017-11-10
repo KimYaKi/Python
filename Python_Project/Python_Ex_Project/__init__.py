@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
 import pymysql
 
-conn = pymysql.connect(host='localhost', user='User_name', password='User_password', db='User_DB', charset='utf8') 
+conn = pymysql.connect(host='localhost', user='kimjiha', password='9509', db='kimjihaDB', charset='utf8') 
 # mysql에 연결
 
 def insert_SQL():
@@ -74,17 +74,49 @@ def select_SQL():
     conn.close()
     # 연결 종료
 
+def update_SQL():
+    curs = conn.cursor()
+    sql = 'select * from TEST2'
+    curs.execute(sql)
+    row = curs.fetchall()
+    # select해온 결과 값을 row에 tuple의 형태로 각 값을 저장
+    
+    print("-번호-\t-이름-")
+    for i in range(len(row)):
+        print(' %d\t %s'%(row[i][0],row[i][1]))
+        # 입력된 값 출력 문
+    print("어떤  id를 수정하시겠습니까?")
+    num = int(input(">>> "))
+    name = input("수정할 내용을 입력해 주세요 : ")
+    sql = 'update TEST2 set name = \'%s\' where num = %d' % (name,num)
+    print(sql)
+    curs.execute(sql)
+    print("수정을 하시겠습니까? (1.YES / 2.NO)")
+    user = int(input(">>> "))
+    if user == 1:
+        conn.commit()
+        print('입력되었습니다!')
+        # commit을 하면 값이 저장되고 하지 않으면 저장되지 않는다.
+    elif user == 2:
+        print('취소 합니다!')
+    else:
+        print('잘못 입력하였습니다.')
+    conn.close()
+        
+
 def main_sql():
     print(" <<<< 연동 테스트 >>>>")
-    print("어떤 작업을 하시겠습니까?\n1.데이터 입력\n2.데이터 출력")
+    print("어떤 작업을 하시겠습니까?\n1.데이터 입력\n2.데이터 출력\n3.데이터 수정")
     user = input(">>> ")
     if user == '1':
         insert_SQL()
     elif user =='2':
         select_SQL()
+    elif user == '3':
+        update_SQL()
     else:
         print("잘못 입력하였습니다!")
-
+    
 
 if __name__ == '__main__':
     main_sql()

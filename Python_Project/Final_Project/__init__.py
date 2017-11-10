@@ -36,7 +36,7 @@ class PortScanner():
                 if self.is_port_open(url, port):
                     self.output_to_console(" -- Port {} open \n".format(port))
                 else:
-                    self.output_to_console("-- Port {} closed \n".format(port))
+                    self.output_to_console(" -- Port {} closed \n".format(port))
  
     def is_port_open(self, url, port):
         try:
@@ -80,7 +80,7 @@ class PortScanner():
          
         console_frame = Frame(self.root)
         console_frame.grid(row="6", column="1", columnspan="2")
-        self.console_text = Text(console_frame, fg="green", bg="black", state=DISABLED)
+        self.console_text = Text(console_frame, fg="black", bg="white", state=DISABLED)
          
         scrollbar = Scrollbar(console_frame, command=self.console_text.yview)
         scrollbar.pack(side="right", fill=Y)

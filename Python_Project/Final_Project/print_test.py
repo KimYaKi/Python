@@ -1,78 +1,30 @@
-# -*- coding: utf8 -*-
-import tkinter as tk
-import datetime
-import flask
-import redis
+from PyQt5 import QtCore, QtGui, QtWidgets
 
-app = flask.Flask(__name__)
-app.secret_key = 'asdf'
-red = redis.StrictRedis()
+def __init__(self):
+        QWidget.__init__(self)
+        self.layout = QGridLayout(self)
+        self.viewer = None
+        
+        self.x_label = QLabel("X axis:")
+        self.x_chooser = QComboBox()
+        self.x_chooser.setEditable(True)
+        self.y_label = QLabel("Y axis:")
+        self.y_chooser = QComboBox()
+        self.y_chooser.setEditable(True)
+        # TODO: add completers
+        self.nav_reset = QPushButton("&Reset view")
 
+        self.layout.addWidget(self.x_label, 1, 0)
+        self.layout.addWidget(self.x_chooser, 1, 1)
+        self.layout.addWidget(self.y_label, 1, 3)
+        self.layout.addWidget(self.y_chooser, 1, 4)
+        self.layout.addWidget(self.nav_reset, 1, 6)
+        self.layout.setColumnStretch(1, 1)
+        self.layout.setColumnStretch(4, 1)
+        self.layout.setRowStretch(0, 1)
 
-def event_stream():
-    pubsub = red.pubsub()
-    pubsub.subscribe('chat')
-    # TODO: handle client disconnection.
-    for message in pubsub.listen():
-        print(message)
-        yield 'data: %s\n\n' % message['data']
-
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if flask.request.method == 'POST':
-        flask.session['user'] = flask.request.form['user']
-        return flask.redirect('/')
-    return '<form action="" method="post">user: <input name="user">'
-
-
-@app.route('/post', methods=['POST'])
-def post():
-    message = flask.request.form['message']
-    user = flask.session.get('user', 'anonymous')
-    now = datetime.datetime.now().replace(microsecond=0).time()
-    red.publish('chat', u'[%s] %s: %s' % (now.isoformat(), user, message))
-    return flask.Response(status=204)
-
-
-@app.route('/stream')
-def stream():
-    return flask.Response(event_stream(),
-                          mimetype="text/event-stream")
-
-
-@app.route('/')
-def home():
-    if 'user' not in flask.session:
-        return flask.redirect('/login')
-    return """
-        <!doctype html>
-        <title>chat</title>
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-        <style>body { max-width: 500px; margin: auto; padding: 1em; background: black; color: #fff; font: 16px/1.6 menlo, monospace; }</style>
-        <p><b>hi, %s!</b></p>
-        <p>Message: <input id="in" /></p>
-        <pre id="out"></pre>
-        <script>
-            function sse() {
-                var source = new EventSource('/stream');
-                var out = document.getElementById('out');
-                source.onmessage = function(e) {
-                    // XSS in chat is fun
-                    out.innerHTML =  e.data + '\\n' + out.innerHTML;
-                };
-            }
-            $('#in').keyup(function(e){
-                if (e.keyCode == 13) {
-                    $.post('/post', {'message': $(this).val()});
-                    $(this).val('');
-                }
-            });
-            sse();
-        </script>
-    """ % flask.session['user']
-
-
-if __name__ == '__main__':
-    app.debug = True
-    app.run()
+        self.nav_reset.clicked.connect(self.reset_view)
+        self.x_chooser.currentIndexChanged['QString'].connect(self.set_x_from_string)
+        self.y_chooser.currentIndexChanged['QString'].connect(self.set_y_from_string)
+    
+        self.x_chooser.activated['QString'].connect(self.set_x_from_string)
